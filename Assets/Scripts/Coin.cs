@@ -23,6 +23,20 @@ public class Coin : MonoBehaviour {
         StartCoroutine(Float());
 	}
 
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Player")
+        {
+            Pickup();
+        }
+    }
+
+    private void Pickup()
+    {
+		GameManager.Instance.NumCoins++;
+        Destroy(gameObject);
+    }
+
     private IEnumerator Spin()
     {
         while (true)

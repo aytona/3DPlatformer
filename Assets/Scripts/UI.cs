@@ -6,10 +6,13 @@ public class UI : MonoBehaviour {
 
     [SerializeField]
     private Text timerLabel;
+	[SerializeField]
+	private Text coinLabel;
 	
 	void Update () 
     {
         timerLabel.text = FormatTime(GameManager.Instance.TimeRemaining);
+		coinLabel.text = GameManager.Instance.NumCoins.ToString();
 	}
 
     private string FormatTime(float timeInSeconds)

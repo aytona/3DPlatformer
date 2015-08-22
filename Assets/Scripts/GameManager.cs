@@ -4,6 +4,7 @@ using System.Collections;
 public class GameManager : Singleton<GameManager> {
 
     private float _timeRemaining;
+	private int _numCoins;
 
     public float TimeRemaining
     {
@@ -14,6 +15,18 @@ public class GameManager : Singleton<GameManager> {
         set
         {
             _timeRemaining = value;
+        }
+    }
+
+    public int NumCoins
+    {
+        get
+        {
+            return _numCoins;
+        }
+        set
+        {
+            _numCoins = value;
         }
     }
 
