@@ -5,6 +5,10 @@ public class GameManager : Singleton<GameManager> {
 
     private float _timeRemaining;
 	private int _numCoins;
+	private float maxTime = 5 * 60;
+	private float _playerHealth;
+	private int maxHealth = 3;
+	private bool isInvulnerable = false;
 
     public float TimeRemaining
     {
@@ -30,10 +34,60 @@ public class GameManager : Singleton<GameManager> {
         }
     }
 
-    private float maxTime = 5 * 60;
+	public float PlayerHealth
+	{
+		get
+		{
+			return _playerHealth;
+		}
+		set
+		{
+			_playerHealth = value;
+		}
+	}
+
+	public float GetPlayerHealthPercentage()
+	{
+		return PlayerHealth / (float)maxHealth;
+	}
+
+	private void DecrementPlayerHealth(GameObject player)
+	{
+		if (isInvulnerable)
+		{
+			return;
+		}
+
+		StartCoroutine (InvulnerableDelay());
+
+		PlayerHealth--;
+
+		if(PlayerHealth <= 0)
+		{
+			Restart();
+		}
+	}
+
+	private void Restart()
+	{
+		Application.LoadLevel(Application.loadedLevel);
+		TimeRemaining = maxTime;
+		PlayerHealth = maxHealth;
+	}
+
+	void OnEnable()
+	{
+		DamagePlayer.OnDamagePlayer += DecrementPlayerHealth;
+	}
+
+	void OnDisable()
+	{
+		DamagePlayer.OnDamagePlayer -= DecrementPlayerHealth;
+	}
 
 	void Start () {
         TimeRemaining = maxTime;
+		PlayerHealth = maxHealth;
 	}
 	
 	void Update () {
@@ -41,8 +95,14 @@ public class GameManager : Singleton<GameManager> {
 
         if (TimeRemaining <= 0)
         {
-            Application.LoadLevel(Application.loadedLevel);
-            TimeRemaining = maxTime;
+			Restart();
         }
+	}
+
+	private IEnumerator InvulnerableDelay()
+	{
+		isInvulnerable = true;
+		yield return new WaitForSeconds(1.0f);
+		isInvulnerable = false;
 	}
 }
